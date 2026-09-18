@@ -9,9 +9,17 @@ import SwiftUI
 
 @main
 struct SwiftUI_DemoApp: App {
+    @State var loginViewModel = LoginViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if loginViewModel.isLoginIn {
+                NavigationStack {
+                    HomeView(viewModel: loginViewModel)
+                }
+            } else {
+                LoginView(viewModel: loginViewModel)
+            }
         }
     }
 }

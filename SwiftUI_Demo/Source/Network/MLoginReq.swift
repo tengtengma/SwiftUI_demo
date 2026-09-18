@@ -37,8 +37,8 @@ class MLoginReq: MBaseReq {
         let itemDic = dic["item"] as? Dictionary<String, Any>
         let token = dic["token"] as? String
         
-        UserDefaults.standard.setValue(token, forKey: KEY_Token)
-        UserDefaults.standard.synchronize()
+//        UserDefaults.standard.setValue(token, forKey: KEY_Token)
+//        UserDefaults.standard.synchronize()
         
         result.item = itemDic
         
