@@ -30,7 +30,7 @@ class LoginViewModel {
     func loginAction() {
         print("Click login button: \(self.username) / \(self.password)")
         guard !username.isEmpty && !password.isEmpty else { return }
-        
+        //todo: should encode it and save
         UserDefaults.standard.set(self.username, forKey: KEY_Username)
         UserDefaults.standard.set(self.password, forKey: KEY_Password)
         UserDefaults.standard.synchronize()
