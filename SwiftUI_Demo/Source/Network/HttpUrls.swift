@@ -9,6 +9,6 @@ import Foundation
 
 let baseURL = ""                                 // base url
 let loginURL = "/v1/login"                                              // login url
-
+let getNewsURL = "https://api.mediastack.com/v1/news?access_key="       // news
 
 
