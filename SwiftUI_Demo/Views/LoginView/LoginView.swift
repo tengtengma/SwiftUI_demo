@@ -39,7 +39,7 @@ struct LoginView: View {
             Button(action: {
                 viewModel.loginAction()
             }) {
-                Text("login")
+                Text("Login")
                     .font(.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -49,9 +49,28 @@ struct LoginView: View {
             }
             .padding(.top, 10)
             
+            // Register button
+            Button {
+                viewModel.registerAction()
+            } label: {
+                Text("Register")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+            }
+            .padding(.top, 10)
+
             Spacer()
         }
         .padding(24)
+        .alert("Success", isPresented: $viewModel.showSuccessAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Registration successful! Please login with your new account.")
+        }
     }
 }
 
@@ -91,4 +110,8 @@ struct CustomTextFieldView: View {
             .cornerRadius(10)
         }
     }
+}
+#Preview {
+    // 如果你的 LoginViewModel 有初始化参数，需要在这里传入
+    LoginView(viewModel: LoginViewModel())
 }

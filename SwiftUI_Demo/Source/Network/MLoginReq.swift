@@ -31,17 +31,7 @@ class MLoginReq: MBaseReq {
     }
 
     override func initWithJSONDictionary(dic: Dictionary<String, Any>) -> MBaseReq.response {
-        
-        var result = super.initWithJSONDictionary(dic: dic)
-        
-        let itemDic = dic["item"] as? Dictionary<String, Any>
-        let token = dic["token"] as? String
-        
-//        UserDefaults.standard.setValue(token, forKey: KEY_Token)
-//        UserDefaults.standard.synchronize()
-        
-        result.item = itemDic
-        
-        return result
+                
+        return super.initWithJSONDictionary(dic: dic)
     }
 }

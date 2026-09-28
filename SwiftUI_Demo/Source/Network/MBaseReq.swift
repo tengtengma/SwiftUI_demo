@@ -22,7 +22,7 @@ class MBaseReq: NSObject {
     
     
     enum response_code: Int {
-        case success = 200
+        case success = 0
         case failed = -1
     }
     
@@ -39,21 +39,13 @@ class MBaseReq: NSObject {
     }
 
     func getRequestParametersDictionary() -> Dictionary<String, Any> {
-        
-        let dataDic = Dictionary<String, Any>()
-        
-        return dataDic
+                
+        return Dictionary<String, Any>()
     }
     
     
     func initWithJSONDictionary(dic: Dictionary<String, Any>) -> response{
-        
-        let errorCode = dic["code"] as? Int
-        let message = dic["msg"] as? String
-        
-        let resultData = response(message: message, errorCode: errorCode)
-        
-        return resultData
+        return response(item: dic["data"] as? Dictionary<String, Any> , message: dic["message"] as? String ,errorCode: dic["statusCode"] as? Int)
     }
     
 

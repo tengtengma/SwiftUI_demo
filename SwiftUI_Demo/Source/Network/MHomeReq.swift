@@ -10,7 +10,7 @@ import UIKit
 class MHomeReq: MBaseReq {
     
     override func url() -> String? {
-        return getNewsURL + APIKEY_Mediastack
+        return baseURL + getNewsURL
     }
     
     override func getRequestParametersDictionary() -> Dictionary<String, Any> {
@@ -22,8 +22,10 @@ class MHomeReq: MBaseReq {
 
     /// mediastack 成功时返回的新闻列表位于 `data`，并不包含项目通用的 `code` 字段。
     override func initWithJSONDictionary(dic: Dictionary<String, Any>) -> response {
-        if let data = dic["data"] as? [[String: Any]] {
-            return response(itemList: data, message: nil, errorCode: responseCode.rawValue)
+        if let data = dic["data"] as? [String: Any] {
+            if let articlesDic = data["articles"] as? [[String: Any]]{
+                return response(itemList: articlesDic, message: nil, errorCode: responseCode.rawValue)
+            }
         }
 
         let error = dic["error"] as? [String: Any]

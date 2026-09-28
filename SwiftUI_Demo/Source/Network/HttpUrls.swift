@@ -7,8 +7,10 @@
 
 import Foundation
 
-let baseURL = ""                                 // base url
-let loginURL = "/v1/login"                                              // login url
-let getNewsURL = "https://api.mediastack.com/v1/news?access_key="       // news
+let baseURL = "http://3.27.88.149:8080"                                 // base url
+let loginURL = "/api/Auth/login"                                              // login url
+let registerURL = "/api/Auth/register"
+let getProfileURL = "/api/user/profile"
+let getNewsURL = "/api/News"
 
 
