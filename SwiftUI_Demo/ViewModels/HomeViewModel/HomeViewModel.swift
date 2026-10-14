@@ -26,6 +26,10 @@ class HomeViewModel {
         isLoading = true
         errorMessage = nil
         
+        defer{
+            isLoading = false
+        }
+        
         do{
             newsResponse = try await newsService.getNews()
             guard let response = newsResponse
@@ -37,7 +41,7 @@ class HomeViewModel {
                 HomeNews(article: article)
             }
         }catch{
-            
+            print("error")
         }
     }
 }
