@@ -20,8 +20,8 @@ class LoginViewModel {
     private let authService: AuthServiceProtocol
     private(set) var authResponse: AuthResponse?
     
-    init(authSevice: AuthServiceProtocol) {
-        self.authService = authSevice
+    init(authServrice: AuthServiceProtocol) {
+        self.authService = authServrice
         
         guard let username = UserDefaults.standard.object(forKey: KEY_Username) as? String else { return }
         _isLoginIn = !username.isEmpty

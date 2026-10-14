@@ -9,9 +9,12 @@ import Foundation
 import Alamofire
 
 final class AppContainer {
+    // MARK: - Protocol
     let networkService: NetworkServiceProtocol
-    let authService: AuthServiceProtocol
-    let newsService: NewsServiceProtocol
+    
+    // MARK: - ViewModels
+    let loginViewModel: LoginViewModel
+    let homeViewModel: HomeViewModel
 
     init(configuration: NetworkConfiguration) {
         let sessionConfiguration = URLSessionConfiguration.default
@@ -19,16 +22,11 @@ final class AppContainer {
         sessionConfiguration.timeoutIntervalForResource = configuration.resourceTimeout
         
         let session = Session(configuration: sessionConfiguration)
-        
-        let networkService = NetworkManager(
-            session: session,
-            configuration: configuration
-        )
-        
+        let networkService = NetworkManager(session: session, configuration: configuration)
         self.networkService = networkService
         
-        self.authService = AuthService(networkService: networkService)
-        self.newsService = NewsService(networkService: networkService)
+        self.loginViewModel = LoginViewModel(authServrice: AuthService(networkService: networkService))
+        self.homeViewModel = HomeViewModel(newsService: NewsService(networkService: networkService))
     }
 }
 

@@ -1,34 +1,50 @@
+
 import SwiftUI
 
 @main
 struct SwiftUI_DemoApp: App {
-    private let container: AppContainer
 
     @State private var loginViewModel: LoginViewModel
+    @State private var homeViewModel: HomeViewModel
 
     init() {
         let configuration = NetworkConfiguration(
-            baseURL: URL(string: "http://0.0.0.0:5177")!
+            baseURL: URL(string: "http://127.0.0.1:5177")!
         )
 
         let container = AppContainer(
             configuration: configuration
         )
 
-        self.container = container
+        _loginViewModel = State(
+            initialValue: container.loginViewModel
+        )
 
-        _loginViewModel = State(initialValue: LoginViewModel(authSevice: container.authService))
-
+        _homeViewModel = State(
+            initialValue: container.homeViewModel
+        )
     }
 
     var body: some Scene {
         WindowGroup {
-            if loginViewModel.isLoginIn {
-                NavigationStack {
-                    HomeView(viewModel: loginViewModel, newsService: self.container.newsService)
+            Group {
+                if loginViewModel.isLoginIn {
+                    NavigationStack {
+                        HomeView(
+                            loginViewModel: loginViewModel,
+                            homeViewModel: homeViewModel
+                        )
+                    }
+                } else {
+                    LoginView(
+                        viewModel: loginViewModel
+                    )
                 }
-            } else {
-                LoginView(viewModel: loginViewModel)
+            }
+            .onChange(of: loginViewModel.isLoginIn) {
+                print(
+                    "Login state changed: \(loginViewModel.isLoginIn)"
+                )
             }
         }
     }

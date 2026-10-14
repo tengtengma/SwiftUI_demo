@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Bindable var viewModel: LoginViewModel
+    @Bindable var loginViewModel: LoginViewModel
     @State private var homeViewModel: HomeViewModel
 
-    init(viewModel: LoginViewModel, newsService: NewsServiceProtocol) {
-        self.viewModel = viewModel
-        self._homeViewModel = State(initialValue: HomeViewModel(newsService: newsService))
+    init(loginViewModel: LoginViewModel, homeViewModel: HomeViewModel) {
+        self.loginViewModel = loginViewModel
+        self._homeViewModel = State(initialValue: homeViewModel)
     }
 
     var body: some View {
@@ -98,7 +98,7 @@ struct HomeView: View {
         .navigationTitle("News")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Sign Out", action: viewModel.logout)
+                Button("Sign Out", action: loginViewModel.logout)
             }
         }
         .task {
