@@ -36,13 +36,18 @@ class NetManager: NSObject {
         print("Request_Url: \(urlString) \nRequest_Body: \(String(describing: req.getRequestParametersDictionary()))")
         
         // 2. 用 switch 优雅转换 HTTPMethod，替代冗长的 if-else
-        let httpMethod: HTTPMethod = {
+        let httpMethod: Alamofire.HTTPMethod = {
             switch req.methodType {
-            case .GET: return .get
-            case .POST: return .post
-            case .PUT: return .put
-            case .DELETE: return .delete
-            @unknown default: return .get
+            case .GET:
+                return .get
+            case .POST:
+                return .post
+            case .PUT:
+                return .put
+            case .DELETE:
+                return .delete
+            @unknown default:
+                return .get
             }
         }()
         

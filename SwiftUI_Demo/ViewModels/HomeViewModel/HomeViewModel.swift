@@ -11,29 +11,33 @@ class HomeViewModel {
     var news: [HomeNews] = []
     var isLoading = false
     var errorMessage: String?
+    
+    private let newsService: NewsServiceProtocol
+    private(set) var newsResponse: NewsResponse?
+    
+    init(newsService: NewsServiceProtocol) {
+        self.newsService = newsService
+    }
+    
 
-    func loadNews() {
+    func loadNews() async{
         guard !isLoading else { return }
 
         isLoading = true
         errorMessage = nil
-
-        let request = MHomeReq()
-        NetManager.shareInstance.sendRequest(req: request) { [weak self] request in
-            let items = (request.result?.itemList ?? []).compactMap { item -> HomeNews? in
-                guard let dictionary = item as? [String: Any] else { return nil }
-                return HomeNews(dictionary: dictionary)
+        
+        do{
+            newsResponse = try await newsService.getNews()
+            guard let response = newsResponse
+            else {
+                print("error")
+                return
             }
-
-            DispatchQueue.main.async {
-                self?.news = items
-                self?.isLoading = false
+            news = response.data.articles.map { article in
+                HomeNews(article: article)
             }
-        } failed: { [weak self] _, error in
-            DispatchQueue.main.async {
-                self?.errorMessage = error.localizedDescription
-                self?.isLoading = false
-            }
+        }catch{
+            
         }
     }
 }

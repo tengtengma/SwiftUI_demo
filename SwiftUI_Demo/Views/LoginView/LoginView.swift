@@ -37,7 +37,9 @@ struct LoginView: View {
             
             // Login button
             Button(action: {
-                viewModel.loginAction()
+                Task{
+                    await viewModel.loginAction()
+                }
             }) {
                 Text("Login")
                     .font(.headline)
@@ -51,7 +53,9 @@ struct LoginView: View {
             
             // Register button
             Button {
-                viewModel.registerAction()
+                Task{
+                    await viewModel.registerAction()
+                }
             } label: {
                 Text("Register")
                     .font(.headline)
@@ -111,7 +115,4 @@ struct CustomTextFieldView: View {
         }
     }
 }
-#Preview {
-    // 如果你的 LoginViewModel 有初始化参数，需要在这里传入
-    LoginView(viewModel: LoginViewModel())
-}
+

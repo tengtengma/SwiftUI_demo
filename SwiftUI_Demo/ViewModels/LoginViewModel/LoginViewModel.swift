@@ -17,69 +17,60 @@ class LoginViewModel {
     var showSuccessAlert = false
     var message = ""
     
-    init(username: String = "", password: String = "", isLoginIn: Bool = false, showSuccessAlert: Bool = false, message: String = "") {
-        self.username = username
-        self.password = password
-        self.isLoginIn = (UserDefaults.standard.object(forKey: KEY_Username) != nil) ? true : false
-        self.showSuccessAlert = showSuccessAlert
-        self.message = message
+    private let authService: AuthServiceProtocol
+    private(set) var authResponse: AuthResponse?
+    
+    init(authSevice: AuthServiceProtocol) {
+        self.authService = authSevice
+        
+        guard let username = UserDefaults.standard.object(forKey: KEY_Username) as? String else { return }
+        _isLoginIn = !username.isEmpty
     }
     
-    func loginAction() {
+    func loginAction() async {
         print("Click login button: \(self.username) / \(self.password)")
         guard !username.isEmpty && !password.isEmpty else { return }
         
-        let loginReq = MLoginReq()
-        loginReq.username = self.username
-        loginReq.password = self.password
-        loginReq.methodType = .POST
-        NetManager.shareInstance.sendRequest(req: loginReq) { [unowned self] response in
+        do {
+            authResponse = try await authService.login(
+                username: username,
+                password: password
+            )
 
-            guard let result = loginReq.result,
-                  let data = result.item,
-                  let token = data["token"] as? String else {
-                self.message = "failed"
-                self.showSuccessAlert = true
+            guard let response = authResponse,
+                  !response.data.token.isEmpty else {
+                message = "Token is empty"
                 return
             }
-
-            UserDefaults.standard.set(self.username, forKey: KEY_Username)
-            UserDefaults.standard.set(self.password, forKey: KEY_Password)
-            UserDefaults.standard.set(token, forKey: KEY_Token)
-
-            self.message = result.message ?? ""
-            self.isLoginIn = true
+            saveToStorage(response: response)
+            isLoginIn = true
             
-        } failed: { String, NSError in
-            self.message = String
-            self.isLoginIn = false
+        }catch{
+            message = error.localizedDescription
+            print(message)
         }
+        
+        
     }
     
-    func registerAction() {
+    func registerAction() async {
         print("Click register button: \(self.username) / \(self.password)")
         guard !username.isEmpty && !password.isEmpty else { return }
         
-        let registerReq = MRegisterReq()
-        registerReq.username = self.username
-        registerReq.password = self.password
-        registerReq.methodType = .POST
-        NetManager.shareInstance.sendRequest(req: registerReq) { [unowned self] response in
-            guard let result = registerReq.result,
-                  let data = result.item else{
-                self.message = "failed"
-                self.showSuccessAlert = true
-                return
-            }
-            self.message = result.message ?? ""
-            self.showSuccessAlert = true
+        do{
+            authResponse = try await authService.register(username: username, password: password)
             
-        } failed: { String, NSError in
-            self.message = String
-            self.showSuccessAlert = true
-            
+        }catch{
+            message = error.localizedDescription
         }
         
+        
+    }
+    
+    func saveToStorage(response: AuthResponse) {
+        UserDefaults.standard.set(response.data.token, forKey: KEY_Token)
+        UserDefaults.standard.set(response.data.username, forKey: KEY_Username)
+
     }
     
     func logout() {

@@ -32,4 +32,18 @@ struct HomeNews: Identifiable {
         self.publishedAt = dictionary["published_at"] as? String ?? ""
         self.url = url
     }
+    
+    init(article: NewsArticle) {
+        self.id = String(article.id)
+        self.author = article.author ?? ""
+        self.title = article.title
+        self.summary = article.description
+        self.source = article.source
+        self.imageURL = article.image.flatMap { URL(string: $0) }
+        self.category = article.category
+        self.language = article.language
+        self.country = article.country
+        self.publishedAt = article.publishedAt
+        self.url = article.url
+    }
 }

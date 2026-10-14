@@ -9,21 +9,35 @@ import SwiftUI
 
 struct HomeView: View {
     @Bindable var viewModel: LoginViewModel
-    @State private var homeViewModel = HomeViewModel()
-    
+    @State private var homeViewModel: HomeViewModel
+
+    init(viewModel: LoginViewModel, newsService: NewsServiceProtocol) {
+        self.viewModel = viewModel
+        self._homeViewModel = State(initialValue: HomeViewModel(newsService: newsService))
+    }
+
     var body: some View {
         Group {
             if homeViewModel.isLoading && homeViewModel.news.isEmpty {
                 ProgressView("Loading news...")
+
             } else if let errorMessage = homeViewModel.errorMessage,
                       homeViewModel.news.isEmpty {
                 ContentUnavailableView {
-                    Label("Unable to load news", systemImage: "wifi.exclamationmark")
+                    Label(
+                        "Unable to load news",
+                        systemImage: "wifi.exclamationmark"
+                    )
                 } description: {
                     Text(errorMessage)
                 } actions: {
-                    Button("Try Again", action: homeViewModel.loadNews)
+                    Button("Try Again") {
+                        Task {
+                            await homeViewModel.loadNews()
+                        }
+                    }
                 }
+
             } else {
                 List(homeViewModel.news) { news in
                     NavigationLink {
@@ -32,12 +46,16 @@ struct HomeView: View {
                         HStack(alignment: .top, spacing: 12) {
                             if let imageURL = news.imageURL {
                                 AsyncImage(url: imageURL) { image in
-                                    image.resizable().scaledToFill()
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
                                 } placeholder: {
                                     ProgressView()
                                 }
                                 .frame(width: 88, height: 88)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 8)
+                                )
                             }
 
                             VStack(alignment: .leading, spacing: 8) {
@@ -54,10 +72,13 @@ struct HomeView: View {
 
                                 HStack(spacing: 4) {
                                     Text(news.source)
+
                                     if !news.author.isEmpty {
                                         Text("· \(news.author)")
                                     }
+
                                     Spacer()
+
                                     Text(news.category)
                                 }
                                 .font(.caption)
@@ -68,7 +89,9 @@ struct HomeView: View {
                     .padding(.vertical, 4)
                 }
                 .refreshable {
-                    homeViewModel.loadNews()
+                    Task{
+                        await homeViewModel.loadNews()
+                    }
                 }
             }
         }
@@ -78,6 +101,9 @@ struct HomeView: View {
                 Button("Sign Out", action: viewModel.logout)
             }
         }
-        .onAppear(perform: homeViewModel.loadNews)
+        .task {
+            await homeViewModel.loadNews()
+        }
     }
 }
+
