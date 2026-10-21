@@ -31,9 +31,7 @@ class MRegisterReq: MBaseReq {
     }
 
     override func initWithJSONDictionary(dic: Dictionary<String, Any>) -> MBaseReq.response {
-        
-        var result = super.initWithJSONDictionary(dic: dic)
-        
-        return result
+                
+        return super.initWithJSONDictionary(dic: dic)
     }
 }

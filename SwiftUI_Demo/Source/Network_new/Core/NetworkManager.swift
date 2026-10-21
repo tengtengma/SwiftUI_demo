@@ -14,17 +14,12 @@ final class NetworkManager: NetworkServiceProtocol {
     private let session: Session
     private let configuration: NetworkConfiguration
 
-    init(
-        session: Session,
-        configuration: NetworkConfiguration
-    ) {
+    init(session: Session, configuration: NetworkConfiguration) {
         self.session = session
         self.configuration = configuration
     }
 
-    func request<T: Decodable>(
-        _ request: any NetworkRequest
-    ) async throws -> T {
+    func request<T: Decodable>( _ request: any NetworkRequest) async throws -> T {
         do {
             let urlRequest = try makeURLRequest(request)
 
